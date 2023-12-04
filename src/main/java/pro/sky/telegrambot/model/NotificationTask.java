@@ -24,4 +24,14 @@ public class NotificationTask {
 
     public NotificationTask() {
     }
+
+    @Override
+    public String toString() {
+        return "NotificationTask{" +
+                "id=" + id +
+                ", chatId=" + chatId +
+                ", messageText='" + messageText + '\'' +
+                ", notificationSendTime=" + notificationSendTime +
+                '}';
+    }
 }

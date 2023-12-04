@@ -8,7 +8,9 @@ import com.pengrad.telegrambot.response.SendResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import pro.sky.telegrambot.model.NotificationTask;
 import pro.sky.telegrambot.service.UpdatesListenerService;
 
 import javax.annotation.PostConstruct;
@@ -67,5 +69,12 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
             String item = matcher.group(3);
             updatesListenerService.createNotificationTask(chatId, date, item);
         }
+    }
+
+    @Scheduled(cron = "0 * * * * *")
+    public void run() {
+        List<NotificationTask> notifications = updatesListenerService.getCurrentNotifications();
+        System.out.println(notifications);
+
     }
 }

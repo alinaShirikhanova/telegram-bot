@@ -5,7 +5,10 @@ import pro.sky.telegrambot.model.NotificationTask;
 import pro.sky.telegrambot.repository.NotificationTaskRepository;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 @Service
 public class UpdatesListenerService {
@@ -16,7 +19,12 @@ public class UpdatesListenerService {
     }
 
     public void createNotificationTask(Long chatId, String data, String messageText){
-        NotificationTask notificationTask = new NotificationTask(chatId, messageText, LocalDateTime.parse("01.01.2022 20:00", DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        NotificationTask notificationTask = new NotificationTask(chatId, messageText, LocalDateTime.parse(data, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
         notificationTaskRepository.save(notificationTask);
+    }
+
+    public List<NotificationTask> getCurrentNotifications() {
+        LocalTime dateTime = LocalTime.now();
+        return notificationTaskRepository.getNotificationsByDate(dateTime);
     }
 }
