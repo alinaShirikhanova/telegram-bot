@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 @Entity(name = "notification_task")
 @Table(name = "notification_task")
+
 public class NotificationTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +23,38 @@ public class NotificationTask {
         this.notificationSendTime = notificationSendTime;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(Long chatId) {
+        this.chatId = chatId;
+    }
+
+    public String getMessageText() {
+        return messageText;
+    }
+
+    public void setMessageText(String messageText) {
+        this.messageText = messageText;
+    }
+
+    public LocalDateTime getNotificationSendTime() {
+        return notificationSendTime;
+    }
+
+    public void setNotificationSendTime(LocalDateTime notificationSendTime) {
+        this.notificationSendTime = notificationSendTime;
+    }
+
     public NotificationTask() {
     }
 
@@ -34,4 +67,6 @@ public class NotificationTask {
                 ", notificationSendTime=" + notificationSendTime +
                 '}';
     }
+
+
 }

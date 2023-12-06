@@ -74,6 +74,7 @@ public class TelegramBotUpdatesListener implements UpdatesListener {
     @Scheduled(cron = "0 * * * * *")
     public void run() {
         List<NotificationTask> notifications = updatesListenerService.getCurrentNotifications();
+        sendMessage(notifications.get(0).getChatId(), notifications.get(0).getMessageText());
         System.out.println(notifications);
 
     }

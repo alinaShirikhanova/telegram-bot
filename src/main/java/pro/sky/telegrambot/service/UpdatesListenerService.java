@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import pro.sky.telegrambot.model.NotificationTask;
 import pro.sky.telegrambot.repository.NotificationTaskRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
@@ -20,11 +21,20 @@ public class UpdatesListenerService {
 
     public void createNotificationTask(Long chatId, String data, String messageText){
         NotificationTask notificationTask = new NotificationTask(chatId, messageText, LocalDateTime.parse(data, DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm")));
+        System.out.println(notificationTask);
         notificationTaskRepository.save(notificationTask);
     }
 
     public List<NotificationTask> getCurrentNotifications() {
-        LocalTime dateTime = LocalTime.now();
-        return notificationTaskRepository.getNotificationsByDate(dateTime);
+        LocalDateTime dateTime = LocalDateTime.now();
+        LocalDateTime dateTime2 = LocalDateTime.of(dateTime.getYear(),
+                dateTime.getMonth(),
+                dateTime.getDayOfMonth(),
+                dateTime.getHour(),
+                dateTime.getMinute(),
+                0,
+                0);
+
+        return notificationTaskRepository.getNotificationsByDate(dateTime2);
     }
 }
