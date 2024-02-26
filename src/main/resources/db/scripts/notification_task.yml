@@ -1,0 +1,44 @@
+databaseChangeLog:
+  - logicalFilePath: 0.1/user-table
+  - changeSet:
+      id: user-table-0
+      author: alina
+      changes:
+        - createTable:
+            schemaName: public
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: username
+                  type: text
+              - column:
+                  name: chatid
+                  type: bigint
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: user-table-email-unique
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    unique: true
+                    uniqueConstraintName: user-table-email-unique
+              - column:
+                  name: password
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created
+                  type: timestamptz
+                  defaultValueDate: now()
+                  constraints:
+                    nullable: false
+                    updatable: false
