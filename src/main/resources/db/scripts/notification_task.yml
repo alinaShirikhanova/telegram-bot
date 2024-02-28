@@ -19,26 +19,8 @@ databaseChangeLog:
                   name: username
                   type: text
               - column:
-                  name: chatid
-                  type: bigint
+                  name: chat_id
+                  type: bigserial
                   constraints:
                     unique: true
                     uniqueConstraintName: user-table-email-unique
-              - column:
-                  name: email
-                  type: text
-                  constraints:
-                    unique: true
-                    uniqueConstraintName: user-table-email-unique
-              - column:
-                  name: password
-                  type: text
-                  constraints:
-                    nullable: false
-              - column:
-                  name: created
-                  type: timestamptz
-                  defaultValueDate: now()
-                  constraints:
-                    nullable: false
-                    updatable: false

@@ -1,9 +1,7 @@
 package pro.sky.telegrambot.service;
 
-import lombok.extern.apachecommons.CommonsLog;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -14,6 +12,8 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import pro.sky.telegrambot.configuration.TelegramBotConfiguration;
+import pro.sky.telegrambot.model.UserEntity;
+import pro.sky.telegrambot.repository.UserRepository;
 import pro.sky.telegrambot.utils.Command;
 
 import java.util.ArrayList;
@@ -28,10 +28,12 @@ import static pro.sky.telegrambot.utils.Messages.*;
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramBotConfiguration configuration;
+    private final UserRepository userRepository;
 
-    public TelegramBot(TelegramBotConfiguration configuration) {
+    public TelegramBot(TelegramBotConfiguration configuration, UserRepository userRepository) {
         super(configuration.getToken());
         this.configuration = configuration;
+        this.userRepository = userRepository;
         createMainMenu();
     }
 
@@ -45,9 +47,17 @@ public class TelegramBot extends TelegramLongPollingBot {
             chatId = update.getMessage().getChatId();
             String userFirstName = update.getMessage().getChat().getFirstName();
             String text = update.getMessage().getText();
-            String answer = "Выберите команду";
-            getCommandsForRegisteredUsers(chatId, text, userFirstName);
-            buttonsForRegistration(chatId, answer);
+            if (userRepository.findByChatId(chatId).isPresent()){
+                sendMessage(chatId, "И снова здравствуйте!");
+            }
+            else {
+                UserEntity userEntity = new UserEntity().setId(1L).setChatId(chatId).setUsername(userFirstName);
+                sendMessage(chatId, "Привет привет");
+                userRepository.save(userEntity);
+            }
+
+//            getCommandsForRegisteredUsers(chatId, text, userFirstName);
+//            buttonsForRegistration(chatId, answer);
         }
 
 
@@ -108,7 +118,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void buttonGetInfoAboutShelter(Long chatId, String text) {
-        SendMessage message = sendMessage(chatId, text);
+        SendMessage message = createMessage(chatId, text);
 
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
 
@@ -132,7 +142,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void buttonsForRegistration(Long chatId, String text) {
-        SendMessage message = sendMessage(chatId, text);
+        SendMessage message = createMessage(chatId, text);
 
         InlineKeyboardMarkup keyboard = new InlineKeyboardMarkup();
 
@@ -168,12 +178,18 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-    private SendMessage sendMessage(Long chatId, String text) {
+    private void sendMessage(Long chatId, String text) {
+        SendMessage sendMessage = createMessage(chatId, text);
+        executeMessage(sendMessage);
+    }
+
+    private SendMessage createMessage(Long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId(chatId);
         message.setText(text);
         return message;
     }
+
 
     private void createMainMenu() {
         List<BotCommand> listOfCommands = new ArrayList<>();
